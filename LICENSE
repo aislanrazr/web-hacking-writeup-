@@ -1,1 +1,104 @@
-MIT License...
+# Relatório Técnico — Web Hacking
+
+**Autor:** Aislan Guedes  
+**Finalidade:** Documento técnico 
+
+---
+
+## 1. Escopo da Avaliação
+A análise teve como foco:
+- Módulos de autenticação.
+- Parâmetros manipuláveis via interface web.
+- Endpoints de consulta e teste de domínio.
+- Fluxos de geração/aplicação de promoções.
+
+---
+
+## 2. Sumário Executivo
+A avaliação identificou vulnerabilidades com impacto relevante, incluindo:
+- **SQL Injection**
+- **Command Injection**
+- **Quebra de lógica de negócio**
+- **Parâmetros client-side manipuláveis**
+
+Todo o teste foi reproduzido posteriormente em ambiente seguro (LAB).
+
+---
+
+## 3. Metodologia Utilizada
+- **Reconhecimento:** inspeção HTML, mapeamento de parâmetros e endpoints.
+- **Enumeração:** ferramentas de diretórios (ex.: feroxbuster/gobuster).
+- **Análise de parâmetros:** manipulação via DevTools e interceptação.
+- **Testes controlados:** PoCs seguras para validação da lógica.
+
+---
+
+## 4. Achados Técnicos
+
+---
+
+### 🔴 4.1 SQL Injection (Alta Severidade)
+**Descrição:**  
+Campos de autenticação permitiram construção de consultas inseguras.
+
+**Impacto Potencial:**  
+- Bypass de login  
+- Acesso não autorizado  
+- Exfiltração de dados  
+
+**Evidência:**  
+Capturas redigidas disponíveis em `assets/screenshots/`.
+
+**Recomendação resumida:**  
+Prepared statements + sanitização.
+
+---
+
+### 🟠 4.2 Manipulação de Parâmetro Client-side (Média)
+**Descrição:**  
+Campos ocultos no navegador permitiam habilitar promoções não permitidas.
+
+**Impacto:**  
+Geração e uso indevido de cupons.
+
+**Recomendação:**  
+Validação server-side obrigatória.
+
+---
+
+### 🔴 4.3 Command Injection (Alta Severidade)
+**Descrição:**  
+Endpoint de teste de domínio concatenava entrada do usuário em chamadas de sistema.
+
+**Impacto:**  
+Execução arbitrária de comandos no ambiente vulnerável.
+
+**Reprodução Segura:**  
+Simulada em `poc/simulated_cmd_injection_poc.py`.
+
+**Recomendação:**  
+Remover qualquer interação direta com shell.
+
+---
+
+## 5. Provas e Evidências
+- Prints redigidos em `assets/screenshots/`.
+- Log estruturado das requisições.
+- Scripts utilizados (genéricos e seguros) em `tools/`.
+
+---
+
+## 6. Conclusão
+A avaliação evidenciou falhas críticas ligadas a:
+- Falta de validação no servidor
+- Uso de entrada do usuário de forma insegura
+- Lógica de negócio manipulável pelo cliente
+
+O conjunto de recomendações mitiga de forma significativa os riscos identificados.
+
+---
+
+## 7. Próximos Passos Sugeridos
+- Revisão de código seguro (SAST).
+- Implementação de WAF.
+- Automação de testes de segurança no CI/CD.
